@@ -26,7 +26,6 @@ class Server(object):
         if sent_bytes == 0:
           print('socket connection broken (server)')  # TODO: raise/log?
         total_sent_bytes += sent_bytes
-      print('closing client')
       client.shutdown(socket.SHUT_RDWR)
       client.close()
     self.sock.close()
@@ -42,9 +41,7 @@ class Client(object):
     bytes_recd = 0
     while True:
       chunk = self.sock.recv(2048)
-      print('got chunk')
       if chunk == '':
-        print('No data received')
         break
       chunks.append(chunk)
       bytes_recd += len(chunk)
