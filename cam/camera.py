@@ -28,18 +28,15 @@ from functools import partial
 
 
 HOST_IP = '127.0.0.1'
-HOST_PORT = 8478
+HOST_PORT = 8473
 
 def get_frame(video_capture, ip):
   ret, frame = video_capture.read()
   print('\n'.join(dir(frame)))
   print(frame.dtype)
   print(frame.shape)
-  frame = np.fromstring(frame.tostring(), 'uint8')
-  print(frame.shape)
-  frame = frame.reshape(480, 640, 3)
   
-  return pickle.dumps(frame)
+  return frame.tostring()
 
 def get_msg(ip):
   return 'hello world!'
@@ -57,11 +54,11 @@ if __name__ == '__main__':
     while True:
       client = network.Client(socket.SOCK_STREAM)
       data = client.receive(HOST_IP, HOST_PORT)
-      frame = pickle.loads(data)
-      # print(frame2)
+      frame = np.fromstring(data, 'uint8')
+      print(frame.shape)
+      frame = frame.reshape(480, 640, 3)
       cv2.imshow('frame', frame)
       if cv2.waitKey(1) & 0xFF == ord('q'):
         break
-      # print(client.receive(HOST_IP, HOST_PORT))
     cv2.destroyAllWindows()
       
