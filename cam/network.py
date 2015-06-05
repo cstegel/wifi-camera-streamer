@@ -6,7 +6,7 @@ class Server(object):
   
   def __init__(self, sock_type, get_msg, host_ip=None, host_port=None):
     self.host_ip = host_ip or self.SERVER_HOST
-    self.host_port = host_port or self.SERVER_PORT
+    self.host_port = int(host_port) or self.SERVER_PORT
     self.sock = socket.socket(socket.AF_INET, sock_type)
     self.get_msg = get_msg
     
@@ -28,6 +28,11 @@ class Server(object):
         total_sent_bytes += sent_bytes
       client.shutdown(socket.SHUT_RDWR)
       client.close()
+    self.sock.shutdown(socket.SHUT_RDWR)
+    self.sock.close()
+    
+  def __del__(self):
+    self.sock.shutdown(socket.SHUT_RDWR)
     self.sock.close()
     
 class Client(object):
@@ -36,7 +41,7 @@ class Client(object):
     self.sock = socket.socket(socket.AF_INET, sock_type)
     
   def receive(self, ip, port):
-    self.sock.connect((ip, port))
+    self.sock.connect((ip, int(port)))
     chunks = []
     bytes_recd = 0
     while True:
@@ -45,5 +50,8 @@ class Client(object):
         break
       chunks.append(chunk)
       bytes_recd += len(chunk)
+    self.sock.shutdown(socket.SHUT_RDWR)
     self.sock.close()
     return ''.join(chunks)
+    
+  

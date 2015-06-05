@@ -4,6 +4,7 @@ import os
 import socket
 import time
 import pickle
+import sys
 from cam import network
 from functools import partial
 
@@ -28,7 +29,7 @@ from functools import partial
 
 
 HOST_IP = '127.0.0.1'
-HOST_PORT = 8473
+HOST_PORT = 8479
 
 def get_frame(video_capture, ip):
   ret, frame = video_capture.read()
@@ -42,18 +43,24 @@ def get_msg(ip):
   return 'hello world!'
 
 if __name__ == '__main__':
-  is_parent = os.fork()
+  port = sys.argv[2] or HOST_PORT
+  ip = sys.argv[3] or HOST_IP
   
-  if is_parent:
-    cap = cv2.VideoCapture(0)
+  if sys.argv[1] == 'server':
+    cap = cv2.VideoCapture(-1)
+    # cap.open(0)
+    if not cap.isOpened():
+      print('\n'.join(dir(cap)))
+      print('Could not connect to video camera')
+      sys.exit(1)
     server = network.Server(socket.SOCK_STREAM, 
-      partial(get_frame, cap), HOST_IP, HOST_PORT)
+      partial(get_frame, cap), ip, port)
     server.serve()
+    
   else:
-    time.sleep(0.1)
     while True:
       client = network.Client(socket.SOCK_STREAM)
-      data = client.receive(HOST_IP, HOST_PORT)
+      data = client.receive(ip, port)
       frame = np.fromstring(data, 'uint8')
       print(frame.shape)
       frame = frame.reshape(480, 640, 3)
