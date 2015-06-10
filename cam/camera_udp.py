@@ -24,12 +24,17 @@ def get_msg(ip):
   return 'hello world!'
   
 def got_msg(msg):
-  frame = np.fromstring(data, 'uint8')
+  frame = np.fromstring(msg, 'uint8')
   #print(frame.shape)
-  frame = frame.reshape(480, 640, 3)
+  try:
+    frame = frame.reshape(480, 640, 3)
+  except ValueError:
+    print('failed to reshape message')
+    return
   cv2.imshow('frame', frame)
   if cv2.waitKey(1) & 0xFF == ord('q'):
-    break
+    print('PRESSED Q')
+    sys.exit(0)
 
 if __name__ == '__main__':
   port = sys.argv[2] or HOST_PORT
@@ -43,11 +48,11 @@ if __name__ == '__main__':
       print('Could not connect to video camera')
       sys.exit(1)
     sender = network.UdpSender(partial(get_frame, cap), ip, port)
-    server.send_forever()
+    sender.send_forever()
     
   elif sys.argv[1] == 'receiver':
-    client = network.UdpReceiver()
-    client.receive_forever(ip, port, got_msg)
+    client = network.UdpReceiver(ip, port, got_msg)
+    client.receive_forever()
     cv2.destroyAllWindows()
     
   else: 

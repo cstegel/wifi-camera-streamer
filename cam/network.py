@@ -1,4 +1,5 @@
 import socket
+import time
 
 class Server(object):
   SERVER_HOST = ''
@@ -43,32 +44,40 @@ class UdpSender(object):
     self.get_msg = get_msg
     
   def send_forever(self):
+    msgs_sent = 0
+    start_time = time.clock()
     while True:
+      if msgs_sent % 30 == 0:
+        end_time = time.clock()
+        print('30 msgs in %f sec' % (end_time - start_time))
+        start_time = end_time
+        msgs_sent = 0
       total_sent_bytes = 0
-      msg = self.get_msg(addr)
+      msg = self.get_msg(self.send_addr)
       
       while total_sent_bytes < len(msg):
-        sent_bytes = sock.sendto(msg[total_sent_bytes:], self.send_addr)
-        print('sent bytes: %s' % sent_bytes)
+        # print('msg len: %s' % len(msg))
+        msg_chunk = msg[total_sent_bytes:total_sent_bytes + 65507]
+        sent_bytes = self.sock.sendto(msg_chunk, self.send_addr)
+        # print('sent bytes: %s' % sent_bytes)
         if sent_bytes == 0:
           print('failed to send')  # TODO: raise/log?
         total_sent_bytes += sent_bytes
       
       # send blank message to signify being done
-      sock.sendto('', self.send_addr)
+      self.sock.sendto('', self.send_addr)
+      msgs_sent += 1
       
-    self.sock.shutdown(socket.SHUT_RDWR)
     self.sock.close()
     
   def __del__(self):
-    self.sock.shutdown(socket.SHUT_RDWR)
     self.sock.close()
     
 class UdpReceiver(object):
   
-  def __init(self, listen_ip, listen_port, msg_fin_callback):
+  def __init__(self, listen_ip, listen_port, msg_fin_callback):
     self.listen_ip = listen_ip
-    self.listen_port = listen_port
+    self.listen_port = int(listen_port)
     self.sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
     self.msg_fin_callback = msg_fin_callback
     
@@ -77,7 +86,7 @@ class UdpReceiver(object):
     
     msg_buffer = ''
     while True:
-      data, addr = sock.recvfrom(2048)
+      data, addr = self.sock.recvfrom(65507)
       if data == '':
         self.msg_fin_callback(msg_buffer)
         msg_buffer = ''
@@ -85,7 +94,6 @@ class UdpReceiver(object):
         msg_buffer += data
         
   def __del__(self):
-    self.sock.shutdown(socket.SHUT_RDWR)
     self.sock.close()
     
 class Client(object):
