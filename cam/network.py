@@ -35,6 +35,59 @@ class Server(object):
     self.sock.shutdown(socket.SHUT_RDWR)
     self.sock.close()
     
+class UdpSender(object):
+  
+  def __init__(self, get_msg, target_ip, target_port):
+    self.send_addr = (target_ip, int(target_port))
+    self.sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
+    self.get_msg = get_msg
+    
+  def send_forever(self):
+    while True:
+      total_sent_bytes = 0
+      msg = self.get_msg(addr)
+      
+      while total_sent_bytes < len(msg):
+        sent_bytes = sock.sendto(msg[total_sent_bytes:], self.send_addr)
+        print('sent bytes: %s' % sent_bytes)
+        if sent_bytes == 0:
+          print('failed to send')  # TODO: raise/log?
+        total_sent_bytes += sent_bytes
+      
+      # send blank message to signify being done
+      sock.sendto('', self.send_addr)
+      
+    self.sock.shutdown(socket.SHUT_RDWR)
+    self.sock.close()
+    
+  def __del__(self):
+    self.sock.shutdown(socket.SHUT_RDWR)
+    self.sock.close()
+    
+class UdpReceiver(object):
+  
+  def __init(self, listen_ip, listen_port, msg_fin_callback):
+    self.listen_ip = listen_ip
+    self.listen_port = listen_port
+    self.sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
+    self.msg_fin_callback = msg_fin_callback
+    
+  def receive_forever(self):
+    self.sock.bind((self.listen_ip, self.listen_port))
+    
+    msg_buffer = ''
+    while True:
+      data, addr = sock.recvfrom(2048)
+      if data == '':
+        self.msg_fin_callback(msg_buffer)
+        msg_buffer = ''
+      else: 
+        msg_buffer += data
+        
+  def __del__(self):
+    self.sock.shutdown(socket.SHUT_RDWR)
+    self.sock.close()
+    
 class Client(object):
   
   def __init__(self, sock_type):
