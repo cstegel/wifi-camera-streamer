@@ -57,7 +57,7 @@ class UdpSender(object):
       
       while total_sent_bytes < len(msg):
         # print('msg len: %s' % len(msg))
-        msg_chunk = msg[total_sent_bytes:total_sent_bytes + 65507]
+        msg_chunk = msg[total_sent_bytes:total_sent_bytes + 32768]
         sent_bytes = self.sock.sendto(msg_chunk, self.send_addr)
         # print('sent bytes: %s' % sent_bytes)
         if sent_bytes == 0:
@@ -86,7 +86,7 @@ class UdpReceiver(object):
     
     msg_buffer = ''
     while True:
-      data, addr = self.sock.recvfrom(65507)
+      data, addr = self.sock.recvfrom(32768)
       if data == '':
         self.msg_fin_callback(msg_buffer)
         msg_buffer = ''
