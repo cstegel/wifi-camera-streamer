@@ -1,0 +1,8 @@
+# We are using CMake, ignore temp files and the Makefile
+CMakeFiles
+CMakeCache.txt
+cmake_install.cmake
+Makefile
+
+# Don't commit the compiled executable
+opencv_test

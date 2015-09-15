@@ -5,7 +5,7 @@ import cv2
 # camera device.  Intended for OpenCV 3, incompatible with OpenCV 2
 
 cv2.namedWindow("preview")
-vc = cv2.VideoCapture(0)
+vc = cv2.VideoCapture(1)
 
 vc.set(cv2.CAP_PROP_FRAME_HEIGHT, 720)
 vc.set(cv2.CAP_PROP_FRAME_WIDTH, 1280)
