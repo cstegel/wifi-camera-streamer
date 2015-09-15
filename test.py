@@ -1,6 +1,9 @@
 import time
 import cv2
 
+# Script to test if OpenCV is working by streaming video from a
+# camera device.  Intended for OpenCV 3, incompatible with OpenCV 2
+
 cv2.namedWindow("preview")
 vc = cv2.VideoCapture(0)
 
