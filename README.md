@@ -1,6 +1,6 @@
 # Overview
 
-network_camera is meant as a module to set up video streaming between two devices that are connected with WIFI-direct.  It aims to have low latency for transmitting 720p@60fps while being transmitted from a small device such as an Odroid C1.
+network_camera is meant as a module to set up video streaming between two devices via WIFI-direct.  It aims to have low latency for transmitting 720p@60fps while being transmitted from a small device such as an Odroid C1.
 
 This is a work-in-progress.  Currently it will only stream locally to the same device.
 
