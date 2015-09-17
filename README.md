@@ -24,19 +24,21 @@ Based off of these instructions: http://petrkout.com/electronics/low-latency-0-4
 
 
 
-  1. `apt-get install libv4l-dev libjpeg8-dev imagemagick build-essential cmake subversion`
+  1. Install dependencies: `apt-get install libv4l-dev libjpeg8-dev imagemagick build-essential cmake subversion`
   2. `git clone https://github.com/codewithpassion/mjpg-streamer`
     - verified to work with commit a48d422 (bookmarked as https://github.com/LlazyLlama/mjpg-streamer)
   3. `cd mjpg-streamer-experimental`
   4. `make`
+    - this creates the `mjpg_streamer` binary
   
 # Running the camera stream
 
 Start the camera HTTP stream by doing the following:
 
 `./start_cam_stream.sh <path to mjpg_streamer binary directory>`
-    - this folder will also contain the plugins folder 
-    - eg: ~/git/mjpg-streamer/mjpg-streamer-experimental
+    
+  - this folder will also contain the plugins folder 
+  - eg: ~/git/mjpg-streamer/mjpg-streamer-experimental
   
 # Running the display client
 
