@@ -26,17 +26,17 @@ rval, frame = vc.read()
 
 while True:
   rval, frame = vc.read(frame)
-  
+
   if not rval:
     break
     
   cv2.imshow("preview", frame)
   # opencv interprets the incoming RGB as BGR, need to convert it???
   # frame = cv2.cvtColor(frame, cv2.COLOR_RGB2BGR)
-  
+
   # display the image, exit if ESC was pressed
   key = cv2.waitKey(1)
-  if key == 27: 
+  if key == 27:
     break
 
   # output fps
