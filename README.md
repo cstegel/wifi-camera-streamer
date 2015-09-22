@@ -42,4 +42,4 @@ Start the camera HTTP stream by doing the following:
   
 # Running the display client
 
-After the camera stream is running, simply run `python py/display_client_test.py` to connect to the HTTP camera stream and display it.
+After the camera stream is running, simply run `python py/display_client_test.py <host> <port>` to connect to the HTTP camera stream and display it.  The host and port can be found in the `start_cam_stream.sh` script and are likely "localhost" and 8090.
